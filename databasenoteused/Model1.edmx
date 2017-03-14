@@ -1,0 +1,407 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="ContextKey" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="Model" Type="varbinary(max)" Nullable="false" />
+          <Property Name="ProductVersion" Type="nvarchar" MaxLength="32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AlbumDataModels">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="DateCreated" Type="datetime" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CommentsDataModels">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="Datecreated" Type="datetime" />
+          <Property Name="Dateupdated" Type="datetime" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="PhotoID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="PhotoDataModels">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Datecreated" Type="datetime" />
+          <Property Name="Dateupdated" Type="datetime" />
+          <Property Name="publik" Type="bit" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" />
+          <Property Name="Path" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="UserID" Type="int" />
+          <Property Name="AlbumID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserDataModels">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar(max)" />
+          <Property Name="LastName" Type="nvarchar(max)" />
+          <Property Name="email" Type="nvarchar(max)" />
+        </EntityType>
+        <Association Name="FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID">
+          <End Role="UserDataModels" Type="Self.UserDataModels" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AlbumDataModels" Type="Self.AlbumDataModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AlbumDataModels">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID">
+          <End Role="PhotoDataModels" Type="Self.PhotoDataModels" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CommentsDataModels" Type="Self.CommentsDataModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhotoDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CommentsDataModels">
+              <PropertyRef Name="PhotoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID">
+          <End Role="UserDataModels" Type="Self.UserDataModels" Multiplicity="0..1" />
+          <End Role="CommentsDataModels" Type="Self.CommentsDataModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CommentsDataModels">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID">
+          <End Role="AlbumDataModels" Type="Self.AlbumDataModels" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PhotoDataModels" Type="Self.PhotoDataModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AlbumDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhotoDataModels">
+              <PropertyRef Name="AlbumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID">
+          <End Role="UserDataModels" Type="Self.UserDataModels" Multiplicity="0..1" />
+          <End Role="PhotoDataModels" Type="Self.PhotoDataModels" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhotoDataModels">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="ModelStoreContainer">
+          <EntitySet Name="__MigrationHistory" EntityType="Self.__MigrationHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AlbumDataModels" EntityType="Self.AlbumDataModels" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CommentsDataModels" EntityType="Self.CommentsDataModels" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PhotoDataModels" EntityType="Self.PhotoDataModels" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserDataModels" EntityType="Self.UserDataModels" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID" Association="Self.FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID">
+            <End Role="UserDataModels" EntitySet="UserDataModels" />
+            <End Role="AlbumDataModels" EntitySet="AlbumDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID" Association="Self.FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID">
+            <End Role="PhotoDataModels" EntitySet="PhotoDataModels" />
+            <End Role="CommentsDataModels" EntitySet="CommentsDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID" Association="Self.FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID">
+            <End Role="UserDataModels" EntitySet="UserDataModels" />
+            <End Role="CommentsDataModels" EntitySet="CommentsDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID" Association="Self.FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID">
+            <End Role="AlbumDataModels" EntitySet="AlbumDataModels" />
+            <End Role="PhotoDataModels" EntitySet="PhotoDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID" Association="Self.FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID">
+            <End Role="UserDataModels" EntitySet="UserDataModels" />
+            <End Role="PhotoDataModels" EntitySet="PhotoDataModels" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="C__MigrationHistory">
+          <Key>
+            <PropertyRef Name="MigrationId" />
+            <PropertyRef Name="ContextKey" />
+          </Key>
+          <Property Name="MigrationId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ContextKey" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Model" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
+          <Property Name="ProductVersion" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AlbumDataModel">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DateCreated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="UserDataModel" Relationship="Self.FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID" FromRole="AlbumDataModels" ToRole="UserDataModels" />
+          <NavigationProperty Name="PhotoDataModels" Relationship="Self.FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID" FromRole="AlbumDataModels" ToRole="PhotoDataModels" />
+        </EntityType>
+        <EntityType Name="CommentsDataModel">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Datecreated" Type="DateTime" Precision="3" />
+          <Property Name="Dateupdated" Type="DateTime" Precision="3" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="PhotoID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PhotoDataModel" Relationship="Self.FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID" FromRole="CommentsDataModels" ToRole="PhotoDataModels" />
+          <NavigationProperty Name="UserDataModel" Relationship="Self.FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID" FromRole="CommentsDataModels" ToRole="UserDataModels" />
+        </EntityType>
+        <EntityType Name="PhotoDataModel">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Datecreated" Type="DateTime" Precision="3" />
+          <Property Name="Dateupdated" Type="DateTime" Precision="3" />
+          <Property Name="publik" Type="Boolean" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="Int32" />
+          <Property Name="AlbumID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="AlbumDataModel" Relationship="Self.FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID" FromRole="PhotoDataModels" ToRole="AlbumDataModels" />
+          <NavigationProperty Name="CommentsDataModels" Relationship="Self.FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID" FromRole="PhotoDataModels" ToRole="CommentsDataModels" />
+          <NavigationProperty Name="UserDataModel" Relationship="Self.FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID" FromRole="PhotoDataModels" ToRole="UserDataModels" />
+        </EntityType>
+        <EntityType Name="UserDataModel">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AlbumDataModels" Relationship="Self.FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID" FromRole="UserDataModels" ToRole="AlbumDataModels" />
+          <NavigationProperty Name="CommentsDataModels" Relationship="Self.FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID" FromRole="UserDataModels" ToRole="CommentsDataModels" />
+          <NavigationProperty Name="PhotoDataModels" Relationship="Self.FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID" FromRole="UserDataModels" ToRole="PhotoDataModels" />
+        </EntityType>
+        <Association Name="FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID">
+          <End Role="UserDataModels" Type="Self.UserDataModel" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="AlbumDataModels" Type="Self.AlbumDataModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="AlbumDataModels">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID">
+          <End Role="AlbumDataModels" Type="Self.AlbumDataModel" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="PhotoDataModels" Type="Self.PhotoDataModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AlbumDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhotoDataModels">
+              <PropertyRef Name="AlbumID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID">
+          <End Role="PhotoDataModels" Type="Self.PhotoDataModel" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="CommentsDataModels" Type="Self.CommentsDataModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="PhotoDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CommentsDataModels">
+              <PropertyRef Name="PhotoID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID">
+          <End Role="UserDataModels" Type="Self.UserDataModel" Multiplicity="0..1" />
+          <End Role="CommentsDataModels" Type="Self.CommentsDataModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="CommentsDataModels">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID">
+          <End Role="UserDataModels" Type="Self.UserDataModel" Multiplicity="0..1" />
+          <End Role="PhotoDataModels" Type="Self.PhotoDataModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserDataModels">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="PhotoDataModels">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Entities1" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="C__MigrationHistory" EntityType="Self.C__MigrationHistory" />
+          <EntitySet Name="AlbumDataModels" EntityType="Self.AlbumDataModel" />
+          <EntitySet Name="CommentsDataModels" EntityType="Self.CommentsDataModel" />
+          <EntitySet Name="PhotoDataModels" EntityType="Self.PhotoDataModel" />
+          <EntitySet Name="UserDataModels" EntityType="Self.UserDataModel" />
+          <AssociationSet Name="FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID" Association="Self.FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID">
+            <End Role="UserDataModels" EntitySet="UserDataModels" />
+            <End Role="AlbumDataModels" EntitySet="AlbumDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID" Association="Self.FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID">
+            <End Role="AlbumDataModels" EntitySet="AlbumDataModels" />
+            <End Role="PhotoDataModels" EntitySet="PhotoDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID" Association="Self.FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID">
+            <End Role="PhotoDataModels" EntitySet="PhotoDataModels" />
+            <End Role="CommentsDataModels" EntitySet="CommentsDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID" Association="Self.FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID">
+            <End Role="UserDataModels" EntitySet="UserDataModels" />
+            <End Role="CommentsDataModels" EntitySet="CommentsDataModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID" Association="Self.FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID">
+            <End Role="UserDataModels" EntitySet="UserDataModels" />
+            <End Role="PhotoDataModels" EntitySet="PhotoDataModels" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ModelStoreContainer" CdmEntityContainer="Entities1">
+          <EntitySetMapping Name="C__MigrationHistory">
+            <EntityTypeMapping TypeName="Model.C__MigrationHistory">
+              <MappingFragment StoreEntitySet="__MigrationHistory">
+                <ScalarProperty Name="MigrationId" ColumnName="MigrationId" />
+                <ScalarProperty Name="ContextKey" ColumnName="ContextKey" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="ProductVersion" ColumnName="ProductVersion" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AlbumDataModels">
+            <EntityTypeMapping TypeName="Model.AlbumDataModel">
+              <MappingFragment StoreEntitySet="AlbumDataModels">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="DateCreated" ColumnName="DateCreated" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CommentsDataModels">
+            <EntityTypeMapping TypeName="Model.CommentsDataModel">
+              <MappingFragment StoreEntitySet="CommentsDataModels">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="Datecreated" ColumnName="Datecreated" />
+                <ScalarProperty Name="Dateupdated" ColumnName="Dateupdated" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="PhotoID" ColumnName="PhotoID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhotoDataModels">
+            <EntityTypeMapping TypeName="Model.PhotoDataModel">
+              <MappingFragment StoreEntitySet="PhotoDataModels">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Datecreated" ColumnName="Datecreated" />
+                <ScalarProperty Name="Dateupdated" ColumnName="Dateupdated" />
+                <ScalarProperty Name="publik" ColumnName="publik" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="AlbumID" ColumnName="AlbumID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserDataModels">
+            <EntityTypeMapping TypeName="Model.UserDataModel">
+              <MappingFragment StoreEntitySet="UserDataModels">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

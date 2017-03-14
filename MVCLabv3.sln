@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{48673062-9A43-4EDD-BD58-7B3F0503442D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC2_DAL", "DAL\MVC2_DAL.csproj", "{48673062-9A43-4EDD-BD58-7B3F0503442D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC1_WebAppen", "WebAppen\MVC1_WebAppen.csproj", "{07A48E46-B0D3-47D2-881B-89B2557B0FCD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{48673062-9A43-4EDD-BD58-7B3F0503442D} = {48673062-9A43-4EDD-BD58-7B3F0503442D}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVC3_databasenoteused", "databasenoteused\MVC3_databasenoteused.csproj", "{E1814717-272F-416B-B203-B85464ADF7D3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,14 @@ Global
 		{48673062-9A43-4EDD-BD58-7B3F0503442D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48673062-9A43-4EDD-BD58-7B3F0503442D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48673062-9A43-4EDD-BD58-7B3F0503442D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07A48E46-B0D3-47D2-881B-89B2557B0FCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07A48E46-B0D3-47D2-881B-89B2557B0FCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07A48E46-B0D3-47D2-881B-89B2557B0FCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07A48E46-B0D3-47D2-881B-89B2557B0FCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1814717-272F-416B-B203-B85464ADF7D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1814717-272F-416B-B203-B85464ADF7D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1814717-272F-416B-B203-B85464ADF7D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1814717-272F-416B-B203-B85464ADF7D3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

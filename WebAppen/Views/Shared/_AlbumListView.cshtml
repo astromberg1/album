@@ -1,0 +1,28 @@
+﻿@model List<AlbumVM>
+
+@foreach (var album in Model)
+    {
+    <div class="row ">
+        <div class="col-md-2">
+            @Html.DisplayFor(m => album.Name)
+        </div>
+        <div class="col-md-2">
+
+            @Html.DisplayFor(m => album.DateCreated)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(m => album.User.FullName)
+        </div>
+        <div class="col-md-2">
+            @Html.DisplayFor(m => album.Name)
+
+        </div>
+        <div class="col-md-2">
+            @Html.ActionLink("Visa Album", "ViewAlbum", new { id = album.id }, null)
+            @if (User.Identity.IsAuthenticated && album.User.Email == User.Identity.Name)
+                {
+                @Html.ActionLink("Ta bort", "Delete", "Album", new { albumID = album.id }, new { @class = "albumdeletebtn", albumID = album.id })
+                }
+        </div>
+    </div>
+    }

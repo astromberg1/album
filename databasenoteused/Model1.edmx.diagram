@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a8ec0ca0faf64fa6a13bfb0592d6f660" Name="Diagram1">
+        <EntityTypeShape EntityType="Model.C__MigrationHistory" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.AlbumDataModel" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.CommentsDataModel" Width="1.5" PointX="7.5" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.PhotoDataModel" Width="1.5" PointX="5.25" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Model.UserDataModel" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
+        <AssociationConnector Association="Model.FK_dbo_AlbumDataModels_dbo_UserDataModels_UserID" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_dbo_PhotoDataModels_dbo_AlbumDataModels_AlbumID" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_dbo_CommentsDataModels_dbo_PhotoDataModels_PhotoID" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_dbo_CommentsDataModels_dbo_UserDataModels_UserID" ManuallyRouted="false" />
+        <AssociationConnector Association="Model.FK_dbo_PhotoDataModels_dbo_UserDataModels_UserID" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

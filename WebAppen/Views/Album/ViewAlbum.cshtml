@@ -1,0 +1,22 @@
+﻿@model AlbumVM
+
+
+<div class="row">
+    <h3>@Model.Name</h3>
+    @if (User.Identity.IsAuthenticated && Model.User.Email == User.Identity.Name)
+        {
+
+        <p>
+
+      
+
+            @Html.ActionLink("Lägg till foto", "Create", "Photo", Model, null)
+
+        </p>
+
+
+        }
+    <hr />
+
+      @Html.Action("Show", "Photo", Model)
+</div>

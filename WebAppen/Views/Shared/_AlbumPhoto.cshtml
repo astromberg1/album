@@ -1,0 +1,8 @@
+﻿@using WebAppen.Models;
+@model PhotoVM
+
+<div class="col-md-3">
+    <a href="@Url.Action("Details","Photo", Model)">
+        <img src="@Url.Content($"{Model.Path}")" alt="@Model.Description" class="thumbnail">
+    </a>
+</div>

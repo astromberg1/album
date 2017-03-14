@@ -1,0 +1,67 @@
+﻿@model PhotoVM
+
+@{
+    ViewBag.Title = "Ta bort";
+}
+
+<h2>Ta bort</h2>
+
+<h3>Vill du säkert ta bort den?</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DatePosted)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DatePosted)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateEdited)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateEdited)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsPublicPhoto)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsPublicPhoto)
+        </dd>
+
+    </dl>
+</div>
+
+@using (Html.BeginForm("Delete", "Photo", new { id = Model.id, albumID = Model.AlbumID }, FormMethod.Post, new { id = "deletephotoform" }))
+    {
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => Model.id);
+    @Html.HiddenFor(m => Model.AlbumID);
+    <div class="form-actions no-color">
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        @Html.ActionLink("Tillbaka till bilden", "Details", "Photo", Model, null)
+    </div>
+    }
+
+
+<script src="~/Scripts/deletephoto.js"></script>

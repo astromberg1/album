@@ -1,0 +1,38 @@
+﻿@using WebAppen.Models;
+
+@model List<PhotoVM>
+@{
+    ViewBag.Title = "Foto album";
+}
+
+<h1>@ViewBag.Title</h1>
+
+
+
+<h3>Senaste bilder</h3>
+<hr />
+
+@foreach (var photo in Model)
+    {
+    @Html.Partial("_AlbumPhoto", photo)
+    }
+
+
+
+
+<script type="text/javascript">
+
+        $(document).ready(function () {
+
+            start();
+            setTimeout(function () {
+                if (newState == -1) {
+                    SpinnerStop();
+                }
+            }, 3000);
+
+        });
+
+
+
+</script>
