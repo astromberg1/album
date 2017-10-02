@@ -71,6 +71,25 @@ namespace DAL.Repositories
                 }
             }
 
+            public int GetNewIndex()
+            {
+                using (var ctx = new MVCContext())
+                {
+                    var users = ctx.Users
+                        .Include(u => u.Albums)
+                        .Include(u => u.Comments)
+                        .Include(u => u.Photos);
+
+                var res = users.OrderBy(x => x.ID).LastOrDefault();
+
+                    if (res == null)
+                        return 1;
+                    else
+                        return res.ID + 1;
+
+                }
+            }
+
         public int GetID(string email)
             {
             using (var ctx = new MVCContext())
@@ -109,6 +128,11 @@ namespace DAL.Repositories
 
                 if (user != null)
                     {
+                    //ta bort allt relaterat till user
+                    ctx.Photos.RemoveRange(user.Photos);
+                    ctx.Comments.RemoveRange(user.Comments);
+                    ctx.Albums.RemoveRange(user.Albums);
+
                     ctx.Users.Remove(user);
                     ctx.SaveChanges();
                     return true;

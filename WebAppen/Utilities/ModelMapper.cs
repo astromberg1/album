@@ -1,4 +1,5 @@
-﻿using DAL.DataModels;
+﻿using System.Security.Cryptography.X509Certificates;
+using DAL.DataModels;
 using WebAppen.Models;
 using DAL.Repositories;
 
@@ -67,13 +68,14 @@ namespace WebAppen.Utilities
             model.Name = entity.Name;
             model.DateCreated = entity.DateCreated;
             model.UserID = entity.UserID;
+            model.NoOfPhotos = entity.photos.Count;
             model.User = EntityToModel(entity.User);
 
             return model;
             }
         #endregion
 
-        #region Pictures
+        #region Photo
 
 
         public static PhotoDataModel ModelToEntity(PhotoVM model)

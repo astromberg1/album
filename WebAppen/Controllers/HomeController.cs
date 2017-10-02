@@ -7,33 +7,48 @@ using System.Web.Mvc;
 using WebAppen.Models;
 using WebAppen.Utilities;
 using DAL.Repositories;
+using System.Threading;
 
 namespace WebAppen.Controllers
     {
-    [AllowAnonymous]
+    [Authorize]
     public class HomeController : Controller
         {
-        private  PhotoRepository repo = new PhotoRepository();
+        private  static PhotoRepository repo = new PhotoRepository();
 
         public HomeController()
             {
             
 
             }
-      
 
 
+        
         public ActionResult Index()
             {
+            
+                Random randomerare = new Random(Guid.NewGuid().GetHashCode());
 
+
+
+
+            //Thread.Sleep(2000);
             var LatestPhotos = new List<PhotoVM>();
-        if (repo !=null)
-                { 
-                var photosFromDB = repo.All().OrderByDescending(x => x.Datecreated).Take(4).ToList();
-            foreach (var photo in photosFromDB)
+            if (repo != null)
+            {
+                int antalfotos = repo.All().ToList().Count;
+                if (antalfotos > 0)
                 {
-                LatestPhotos.Add(ModelMapper.EntityToModel(photo));
+                    if (antalfotos > 10) antalfotos = 10;
+                    int tal = randomerare.Next(1, 9);
+                    if (tal > antalfotos) tal = antalfotos;
+                    var photosFromDB = repo.All().OrderByDescending(x => x.Datecreated).Take(tal).ToList();
+                    foreach (var photo in photosFromDB)
+                    {
+                        LatestPhotos.Add(ModelMapper.EntityToModel(photo));
+                    }
                 }
+
             }
 
             return View(LatestPhotos);

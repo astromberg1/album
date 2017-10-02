@@ -6,7 +6,7 @@
 @if (User.Identity.IsAuthenticated)
     {
     <div>
-        <h3>  @Html.ActionLink("Nytt album", "Create", "Album", null, new { id = "createalbumbtn" })</h3>
+        <h3>  @Html.ActionLink("Nytt album", "Skapa", "Album", null, new { id = "createalbumbtn" })</h3>
         <p>
 
             @if (ViewData["AlbumInfo"] != null)
@@ -19,28 +19,146 @@
 <h2>@ViewBag.Title</h2>
 <div class="row">
     <div class="col-md-2">
-        @Html.LabelFor(m => m[0].Name)
+        @Html.Label("Album Namn")
+        
     </div>
     <div class="col-md-2">
-
-        @Html.LabelFor(m => m[0].DateCreated)
+        @Html.Label("Skapad Datum")
+       
     </div>
     <div class="col-md-2">
-        @Html.Label("Creator")
+        @Html.Label("Ägare")
     </div>
     <div class="col-md-2">
-        @Html.LabelFor(m => m[0].Name)
+        @Html.Label("Ägare anv namn")
     </div>
     <div class="col-md-2">
-        @Html.Label("Navigation")
+        @Html.Label("Antal foton")
+    </div>
+   
+    <div class="col-md-2">
+        @Html.Label("Navigering")
     </div>
 </div>
 <div id="albumlistcontainer">
 
-    @*@Html.Action("AlbumList")*@
+   
     @Html.Partial("_albumListView")
 
 </div>
 @section scripts{
-    <script src="~/Scripts/albumlist.js"></script>
+   
+    <script type="text/javascript">
+
+        var albumContainer = $("#albumlistcontainer");
+
+        $('document').ready(function (e) {
+
+            addEventListeners();
+
+            setInterval(reloadGalleries, 5000);
+
+
+
+
+        });
+
+        var addEventListeners = function () {
+            deleteEvent();
+            createEvent();
+        };
+
+        var reloadAlbum = function () {
+
+            $.ajax({
+                type: "GET",
+                url: "../../Album/AlbumList",
+                success: function (data) {
+                    $('#albumlistcontainer').html(data);
+                }
+            });
+
+        };
+
+        var deleteEvent = function () {
+            albumContainer.on('click', '.albumdeletebtn', function (e) {
+                e.preventDefault();
+                var model = $(this).attr('albumID');
+                //Sweet alert plugin <----
+                swal({
+                        title: "Vill verkligen tabort albumet?",
+                        text: "Alla bilder i det kommer försvinna!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "ja ta bort det!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        $.post("../../Album/Delete",
+                            { albumID: model },
+                            function (data) {
+                                swal("Deleted!", data, "success");
+                                reloadAlbum();
+                            });
+
+                    });
+
+
+
+            });
+        };
+
+        var createEvent = function () {
+
+            $('#createalbumbtn').click(function (e) {
+                e.preventDefault();
+
+                var albumModel = {
+                    id: "",
+                    Name: "",
+                    DateCreated: "",
+                    UserID: "",
+                    NoOfPhotos:""
+                };
+
+
+
+                swal({
+                        title: "Skapa!",
+                        text: "Input Album Name",
+                        type: "input",
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        animation: "slide-from-top",
+                        inputPlaceholder: "Album namn..."
+                    },
+                    function (inputValue) {
+                        if (inputValue === false) return false;
+
+                        if (inputValue === "" || inputValue.length < 5) {
+                            swal.showInputError("Min 5 tecken!");
+
+                            return false;
+                        }
+                        albumModel.Name = inputValue;
+                        $.post("../../Album/Create",
+                            albumModel,
+                            function (data) {
+                                reloadAlbum();
+                            });
+
+
+                        swal("Bra!", "Album skapat " + inputValue, "success");
+                    });
+
+
+            });
+
+        };
+
+
+    </script>
+
 }
+       

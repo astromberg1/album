@@ -18,5 +18,7 @@ namespace DAL.Repositories.Interface
 
         bool Delete(int id);
 
-        }
+            int GetNewIndex();
+
+    }
     }

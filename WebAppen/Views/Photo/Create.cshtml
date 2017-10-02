@@ -1,17 +1,20 @@
-﻿@model PhotoVM
+﻿@model WebAppen.Models.PhotoVM
 
 @{
-    ViewBag.Title = "Foto";
+    ViewBag.Title = "Ladda Upp";
 }
 
 
-<h2>@ViewBag.Title</h2>
-@using (Html.BeginForm("Create", "Photo", FormMethod.Post, new { enctype = "multipart/form-data", ID = "createform" }))
-    {
+<div id="result"></div>
+<div id="resultreg"></div>
+<h2>@ViewBag.Title.</h2>
+
+<form action="@Url.Action("Create", "Photo")" id="form" enctype="multipart/form-data" class="form-horizontal" method="post">
+   
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => m.AlbumID, new { id = "hiddenfield", Value = Model.AlbumID })
     <div class="form-horizontal">
-        <h4>Foton</h4>
+        <h4>Foto</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
@@ -33,7 +36,7 @@
         <div class="form-group">
             <label for="photo" class="control-label col-md-2">Foto</label>
             <div class="col-md-10">
-                <input id="photo" name="photo" type="file" />
+                <input id="photo" name="photo" type="file"/>
             </div>
         </div>
         <div>
@@ -53,17 +56,120 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" required />
+                <input type="submit" value=Skapa class="btn btn-default" id="submitbtn" required />
             </div>
         </div>
     </div>
-    }
+    
+</form>
 
 <div>
-    @Html.ActionLink("Back to Album", "ViewAlbum", "Album", new { id = Model.AlbumID }, new { ID = "backbtn" })
+    @Html.ActionLink("Tillbaka till album", "ViewAlbum", "Album", new { id = Model.AlbumID }, new { @ID = "backbtn" })
 </div>
+<h3>Albumets Bilder</h3>
+<div id="bilder"></div>
 
 @section scripts{
+    
 
-    <script src="~/Scripts/addphoto10.js"></script>
+
+    <script type="text/javascript">
+
+        $('document').ready(function (e) {
+
+
+            reloadComments();
+        });
+
+
+        var bilder = $('#bilder');
+
+        var reloadComments = function (e) {
+
+            
+            $.ajax({
+                type: "GET",
+                url: "../../Photo/Showphotos?id=" + $('#hiddenfield').val(),
+                success: function (data) {
+                    $('#bilder').html(data);
+                }
+            });
+
+
+
+        };
+
+
+
+
+
+
+
+        var form = $('#form');
+
+        form.submit(function (e) {
+
+            e.preventDefault();
+            if (form.valid()) {
+                swal({
+                        title: "Ladda upp",
+                        text: "OK för att ladda upp",
+                        type: "info",
+                        showCancelButton: true,
+                        closeOnConfirm: false,
+                        showLoaderOnConfirm: true
+                    },
+                    function () {
+                        $.ajax({
+                            method: "POST",
+                            url: "/Photo/Create",
+
+                            data: new FormData(form[0]),
+                            success: function (data) {
+                                if (data.match("^Added")) {
+                                    uploadMoreImagesPrompt();
+                                }
+                                else {
+                                    swal("Oh no!", data, "error")
+                                }
+                            },
+                            error: function (e) {
+                                swal("Oh no!", "Something went wrong at the server!", "error")
+                            },
+                            processData: false,
+                            contentType: false
+                        });
+                    });
+
+            }
+        });
+
+        var uploadMoreImagesPrompt = function() {
+
+            swal({
+                    title: "OK!?",
+                    text: "Ladda upp fler?",
+                    type: "success",
+                    showCancelButton: true,
+                    confirmButtonColor: "#779b79",
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    closeOnConfirm: true,
+                    closeOnCancel: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        form[0].reset();
+                    } else {
+                        window.location = $('#backbtn').attr('href');
+                    }
+                });
+
+
+
+
+        };
+
+
+    </script>
 }

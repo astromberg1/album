@@ -16,15 +16,15 @@ namespace WebAppen.Controllers
     public class AlbumController : Controller
         {
 
-        private AlbumRepository repo = new AlbumRepository();
-        private  UserRepository Userrepo = new UserRepository();
+        private static AlbumRepository repo = new AlbumRepository();
+        private  static UserRepository Userrepo = new UserRepository();
 
         public AlbumController()
                 {
            
                 }
 
-            [AllowAnonymous]
+          
             public ActionResult Index()
                 {
                 var albums = new List<AlbumVM>();
@@ -44,7 +44,7 @@ namespace WebAppen.Controllers
                 }
                 return View(albums);
                 }
-            [AllowAnonymous]
+          
             public ActionResult ViewAlbum(int? id)
                 {
                 if (id == null)
@@ -73,6 +73,7 @@ namespace WebAppen.Controllers
 
                 return View(new AlbumVM());
                 }
+
             [HttpPost]
             public ActionResult Create(AlbumVM model)
                 {
@@ -92,8 +93,12 @@ namespace WebAppen.Controllers
                     }
                 return Redirect(Request.UrlReferrer.ToString());
                 }
+
+
+
+
             [HttpPost]
-            public ActionResult Delete(int albumID)
+            public ActionResult Delete(int AlbumID)
                 {
                 if (User.Identity.IsAuthenticated)
                     {
@@ -102,7 +107,7 @@ namespace WebAppen.Controllers
                 
 
 
-                    var albumToRemove = repo.ByID(albumID);
+                    var albumToRemove = repo.ByID(AlbumID);
 
                     if (albumToRemove.UserID == userID)
                         {
@@ -122,12 +127,13 @@ namespace WebAppen.Controllers
 
 
                         repo.Delete(albumToRemove.ID);
-                        return Content("Album borttaget");
-                        }
-                    }
-                return Content("Gick inte att ta bort");
 
+                    return Content("Album borttaget");
                 }
+            }
+            return Content("Gick inte att ta bort albumet"); ;
+
+        }
 
             public ActionResult AlbumList()
                 {

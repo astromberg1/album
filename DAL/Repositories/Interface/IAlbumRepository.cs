@@ -15,6 +15,8 @@ namespace DAL.Repositories.Interface
 
         AlbumDataModel ByID(int id);
 
+            int GetNewIndex();
+
         bool AddOrUpdate(AlbumDataModel album);
 
         bool Delete(int id);

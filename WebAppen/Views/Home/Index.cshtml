@@ -11,28 +11,20 @@
 
 <h3>Senaste bilder</h3>
 <hr />
+@{
+    int i = 0;
+}
 
-@foreach (var photo in Model)
+<div class="row">
+
+    @foreach (var photo in Model)
     {
-    @Html.Partial("_AlbumPhoto", photo)
-    }
+    
 
+            @Html.Partial("_AlbumPhoto", photo)
 
+    
+            }
 
+        </div>
 
-<script type="text/javascript">
-
-        $(document).ready(function () {
-
-            start();
-            setTimeout(function () {
-                if (newState == -1) {
-                    SpinnerStop();
-                }
-            }, 3000);
-
-        });
-
-
-
-</script>

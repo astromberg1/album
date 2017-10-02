@@ -88,6 +88,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="scripts\stacktrace-0.6.4.js.map" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201703051303132_Current.resx">
@@ -105,6 +106,14 @@
     <EmbeddedResource Include="Migrations\201703140957411_updatename.resx">
       <DependentUpon>201703140957411_updatename.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="scripts\NamespacesAndEnumSupport.js" />
+    <Content Include="scripts\stacktrace-0.6.4.js" />
+    <Content Include="scripts\stacktrace-0.6.4.min.js" />
+    <Content Include="scripts\_references.js" />
+    <Content Include="scripts\_vs2012.intellisense.js" />
+    <Content Include="scripts\_vs2012.intellisense.Test.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

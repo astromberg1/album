@@ -1,63 +1,216 @@
 ﻿@using WebAppen.Models
 @model LoginViewModel
+
 @{
     ViewBag.Title = "Log in";
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-    <div class="col-md-8">
-        <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", id = "userID", @Value = "test@test.com" })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "passwordID", @Value = "1234" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <div class="checkbox">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
-                    </div>
-                </div>
-                <p>
-                    @Html.ActionLink("Register as a new user", "Register")
-                </p>
-                @* Enable this once you have account confirmation enabled for password reset functionality
-                    <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
-            }
-        </section>
-    </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
-</div>
+<div id="result">
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+
+    <h2>@ViewBag.Title.</h2>
+    <div class="row">
+        <div class="col-md-8">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <h4>Du är redan inloggad, så du får logga in med annan användare</h4>
+
+            }
+            <section id="loginForm">
+                <div id="crud"></div>
+                <div id="crud1"></div>
+                <div id="post"></div>
+                <div id="form">
+                    @using (Ajax.BeginForm("Login", "Account", new AjaxOptions
+                    {
+                        OnSuccess = "OnSuccess",
+                        OnBegin = "OnBegin",
+                        OnFailure = "OnFailure",
+                        OnComplete = "OnComplete",
+                        UpdateTargetId ="result",
+                        HttpMethod = "POST",
+                        InsertionMode = InsertionMode.ReplaceWith,
+                        
+
+
+                    }, new { @id = "login-form" }
+
+        ))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h4>Use a local account to log in.</h4>
+
+                        <hr />
+
+              
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "col-md-2 control-label" })
+                            <div class="col-md-10">
+                                
+                                    @Html.TextBoxFor(model => model.Email, new { @name = "Email", @class = "form-control", @id = "userID", @value = @Model.Email });
+                                
+
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Password, new { @class = "col-md-2 control-label" })
+                                    <div class="col-md-10">
+                                        @Html.PasswordFor(model => model.Password, new {@name= "Password", @class = "form-control", @id = "passwordID" , @value = Model.Password })
+                                        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <div class="checkbox">
+                                            @Html.CheckBoxFor(model => model.RememberMe)
+                                            @Html.LabelFor(model => model.RememberMe)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Log in" class="btn btn-default" />
+                                    </div>
+                                </div>
+
+
+                                <p>
+                                    @Html.ActionLink("Register as a new user", "Register")
+                                </p>
+                                @* Enable this once you have account confirmation enabled for password reset functionality
+                                    <p>
+                                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
+                                    </p>*@
+
+                                @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
+                    }
+                </div>
+
+
+
+            </section>
+
+
+
+        </div>
+
+    </div>
+
+        <div class="col-md-4">
+            <section id="socialLoginForm">
+                @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>
+    </div>
+
+
+
+
+
+@section scripts{
+
+
+        <script type="text/javascript">
+
+
+
+            var adress
+            
+            
+                 
+
+            
+
+
+
+          
+            function OnBegin() {
+                        
+                var opts = {
+                    lines: 13 // The number of lines to draw
+                    , length: 28 // The length of each line
+                    , width: 14 // The line thickness
+                    , radius: 42 // The radius of the inner circle
+                    , scale: 2 // Scales overall size of the spinner
+                    , corners: 1 // Corner roundness (0..1)
+                    , color: '#000' // #rgb or #rrggbb or array of colors
+                    , opacity: 0.25 // Opacity of the lines
+                    , rotate: 0 // The rotation offset
+                    , direction: 1 // 1: clockwise, -1: counterclockwise
+                    , speed: 1 // Rounds per second
+                    , trail: 60 // Afterglow percentage
+                    , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+                    , zIndex: 2e9 // The z-index (defaults to 2000000000)
+                    , className: 'spinner' // The CSS class to assign to the spinner
+                    , top: '50%' // Top position relative to parent
+                    , left: '50%' // Left position relative to parent
+                    , shadow: false // Whether to render a shadow
+                    , hwaccel: false // Whether to use hardware acceleration
+                    , position: 'absolute' // Element positioning
+                };
+
+           
+
+                //if (document.getElementById("idindex).click == true)
+
+                var spinTarget = document.getElementById('screen');
+                var spinner = new Spinner(opts);
+
+
+                spinner.spin(spinTarget);
+                $('#screen').data('spinner', spinner);
+
+               };
+
+
+                function OnFailure(response){
+
+                
+                       
+
+                //alert("Whoops! That didn't go so well did it?");
+                //window.location.pathname = "/Account/Login");
+                //location.assign(adress + "/Account/Login");
+               
+
+            };
+
+            function OnSuccess(result) {
+                //adress = "http://" + top.location.host.toString();
+      
+            //window.location.pathname = "/Home/Index";
+            //location.assign(adress + "/Home/Index");
+
+            if (result.url) {
+                window.location.href = result.url;
+            }
+                
+              
+
+            };
+
+            function OnComplete(response) {
+                $(".spinner").remove();
+                $.validator.unobtrusive.parse("form");
+            
+             
+            };
+            
+
+
+            $('document').ready(function (e) {
+
+                //$.validator.unobtrusive.parse("#crud");
+            
+
+            });
+
+
+
+
+
+
+    </script>
 }
+

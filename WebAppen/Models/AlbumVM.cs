@@ -9,13 +9,16 @@ namespace WebAppen.Models
     public class AlbumVM
         {
         public int id { get; set; }
-        [Required(ErrorMessage = "Please enter Album name.")]
-        [StringLength(50, MinimumLength = 5, ErrorMessage = "Minimum 5, Maximum 50 Characters")]
-        [Display(Name = "Album Name")]
+        [Required(ErrorMessage = "Ange Album namn.")]
+        [StringLength(50, MinimumLength = 5, ErrorMessage = "Min 5, Max 50 tecken")]
+        [Display(Name = "Namn")]
         public string Name { get; set; }
 
-        [Display(Name = "Created")]
+        [Display(Name = "Skapad")]
         public DateTime DateCreated { get; set; }
+
+            [Display(Name = "Antal Foton")]
+        public int NoOfPhotos { get; set; }
 
         public int UserID { get; set; }
 

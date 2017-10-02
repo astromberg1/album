@@ -1,10 +1,13 @@
-﻿@model PhotoVM
+﻿@model WebAppen.Models.PhotoVM
 
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Foto";
 }
-<h2>Details | @Model.Name</h2>
+
+
+
+<h2>Namn: @Model.Name</h2>
 <div class="img-container row">
     <div class="image col-md-6">
         @Html.HiddenFor(m => m.id, new { id = "photoID" })
@@ -12,59 +15,142 @@
     </div>
     <div class="imageinfo col-md-6">
         <div class="description">
-            @Html.LabelFor(m => m.Description)
+            @Html.Label("Beskrivning")
             @Html.DisplayFor(m => m.Description)
         </div>
         <p>
-            @Html.LabelFor(m => m.Uploader)
+            @Html.Label("Ägare")
             @Html.DisplayFor(m => m.Uploader)
         </p>
         <p>
-            @Html.LabelFor(m => m.DatePosted)
+            @Html.Label("Skapad")
             @Html.DisplayFor(m => m.DatePosted)
         </p>
         <p>
-            @Html.LabelFor(m => m.DateEdited)
+            @Html.Label("Ändrad")
             @Html.DisplayFor(m => m.DateEdited)
         </p>
-        @if (User.Identity.IsAuthenticated   && Model.User.Email == User.Identity.Name)
-            {
+      @if (User.Identity.IsAuthenticated && Model.User.Email == User.Identity.Name)
+      {
             <p>
-                @Html.ActionLink("Edit", "Edit", "Photo", Model, null) |
-                @Html.ActionLink("Delete", "Delete", "Photo", Model, null)
+                @Html.ActionLink("Ändra", "Edit", "Photo", Model, null) |
+                @Html.ActionLink("Ta bort", "Delete", "Photo", Model, null)
             </p>
             <div id="test">
 
             </div>
-            }
+        }
         @if (User.Identity.IsAuthenticated)
-            {
-            @Html.Action("newComment", "Comment", Model)
-            }
+        {
+            @Html.Action("NewComment", "Comment", Model)
+        }
         else
-            {
-            @Html.ActionLink("Login to post comments", "Login", "Account")
-            }
+        {
+            @Html.ActionLink("Logga in för att kommentera","Login","Account")
+        }
     </div>
 </div>
 <div class="row">
 
     <div class="col-md-12">
-        <h3>Comments</h3>
+        <h2>Kommentarer</h2>
         <span>
-            @Html.ActionLink("Back to Album", "ViewAlbum", "Album", new { id = Model.AlbumID }, null)
+            @Html.ActionLink("Tillbaka till Album", "ViewAlbum", "Album", new { id = Model.AlbumID }, null)
         </span>
         <hr />
         <div id="commentcontainer">
             @Html.Action("Comments", "Comment", new { photoID = Model.id })
-           
         </div>
     </div>
 
 </div>
 
 @section scripts{
-    <script src="~/Scripts/comments.js"></script>
+    <script type="text/javascript">
+    
+    
+        $('document').ready(function (e) {
+            addEventListeners();
+
+            setInterval(reloadComments, 5000);
+        });
+        var commentsContainer = $('#commentcontainer');
+
+        var reloadComments = function (e) {
+
+            
+            $.ajax({
+                type: "GET",
+                url: "../../Comment/Comments?photoID=" + $('#photoID').val(),
+                success: function (data) {
+                    $('#commentcontainer').html(data);
+                }
+            });
+
+
+
+        };
+
+
+
+        var addEventListeners = function (e) {
+
+            commentsContainer.on('click', '.deletecommentbtn', function (e) {
+                e.preventDefault();
+                var model = $(this).attr('id');
+                //Sweet alert plugin <----
+                swal({
+                        title: "Vill du verligen ta bort kommentaren?",
+                        text: "Den kommer att försvinna!",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ja ta bort den!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        $.post("../../Comment/Delete",
+                            { commentID: model },
+                            function (data) {
+                                reloadComments();
+                            });
+                        swal("Borttagen!", "Din kommentar är borttagen", "success");
+                    });
+
+                         });
+
+
+        };
+
+        var form = $('#newcommentform');
+
+        form.submit(function (e) {
+            e.preventDefault();
+        });
+
+
+        $('#commentsubmitbtn').click(function (e) {
+            e.preventDefault();
+
+            if (form.valid()) {
+
+                $.post("../../Comment/NewComment",
+                    form.serialize(), function (data) {
+                        swal("Kommentar skickad!");
+                        reloadComments();
+
+                    });
+                $('#Comment').val('');
+                $('#Title').val('');
+
+
+            }
+
+        });
+
+    </script>
 }
+
+
 
 

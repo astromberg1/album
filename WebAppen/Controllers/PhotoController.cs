@@ -8,6 +8,7 @@ using WebAppen.Utilities;
 using DAL.Repositories;
 using System.Threading;
 using System.IO;
+using Microsoft.Owin.Security.Provider;
 
 namespace WebAppen.Controllers
 {
@@ -16,6 +17,7 @@ namespace WebAppen.Controllers
         {
         private  PhotoRepository repo = new PhotoRepository();
         private UserRepository Userrepo = new UserRepository();
+            private static AlbumRepository albumrepo = new AlbumRepository();
 
         public PhotoController()
             {
@@ -23,7 +25,7 @@ namespace WebAppen.Controllers
             }
 
         // GET: Picture
-        [AllowAnonymous]
+      
         public ActionResult Show(AlbumVM model)
             {
             var photos = new List<PhotoVM>();
@@ -35,7 +37,25 @@ namespace WebAppen.Controllers
             ViewBag.AlbumName = model.Name;
             return View(photos);
             }
-        [AllowAnonymous]
+
+
+            public ActionResult Showphotos(int id)
+            {
+
+                string resultat = "<p>";
+                var photosFromDB = repo.All().Where(x => x.AlbumID == id);
+                int i = 0;
+                foreach (var photo in photosFromDB)
+                {
+                    i++;
+                    resultat = resultat + "nr: "+ i.ToString() +" "+ photo.Datecreated + " " + photo.Name +"</p>"; 
+
+                }
+
+                
+                return Content(resultat);
+            }
+
         public ActionResult Details(PhotoVM photo)
             {
             var photoModel = ModelMapper.EntityToModel(repo.ByID(photo.id));
@@ -44,16 +64,19 @@ namespace WebAppen.Controllers
 
         public ActionResult Create(AlbumVM model)
             {
-            var pic = new PhotoVM();
-            pic.AlbumID = model.id;
-            return View(pic);
+            
+            PhotoVM p = new PhotoVM();
+                p.AlbumID = model.id;
+                p.Name = "";
+                p.Description = "";
+            return View(p);
             }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(PhotoVM model, HttpPostedFileBase photo)
             {
-            Thread.Sleep(4000);
+            Thread.Sleep(5000);
             var identity = User.Identity.Name;
             int? userID = Userrepo.GetID(identity);
             model.UserID = (int)userID;
@@ -63,9 +86,9 @@ namespace WebAppen.Controllers
             var path = string.Empty;
             var fileName = string.Empty;
             if (photo != null && photo.ContentLength > 0)
-                {
-
-                fileName = model.UserID + model.AlbumID + Path.GetFileName(photo.FileName);
+            {
+                var rek = repo.GetNewIndex();
+                    fileName = "pc" + rek + "al" + model.AlbumID + Path.GetFileName(photo.FileName);
                 if (!Helpers.IsFilePhoto(fileName))
                     {
                     return Content("Filen måste ha formatet png, jpg or jpeg");
@@ -87,15 +110,19 @@ namespace WebAppen.Controllers
 
 
             if (ModelState.IsValid)
-                {
-                model.id = repo.All().Count() + 1;
+            {
+              
                 var newPhoto = ModelMapper.ModelToEntity(model);
                 repo.AddOrUpdate(newPhoto);
-              
-                return RedirectToAction("ViewAlbum", "Album", new { id = model.AlbumID });
-                }
-            return Content("Nånting gick fel");
+
+                return Content("Added fil");
+
+                //return Json(Url.Action("ViewAlbum", "Album", new { id = model.AlbumID }));
+
             }
+                var result1 = "nånting gick fel";
+                return Json(Request.UrlReferrer.ToString());
+        }
 
         public ActionResult Delete(PhotoVM model)
             {
@@ -103,16 +130,21 @@ namespace WebAppen.Controllers
             }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int? id, int albumID)
+        public ActionResult Delete(int? id, int AlbumID)
             {
             string filePath = string.Empty;
 
             if (id != null && User.Identity.IsAuthenticated)
                 {
+                
                 int photoID = (int)id;
+
                 var photoToRemove = repo.ByID(photoID);
+                //int AlbumID = (int)photoToRemove.AlbumID;
+
                 if (photoToRemove != null)
                     {
+                      
                     filePath = Request.MapPath(photoToRemove.Path);
                     FileInfo file = new FileInfo(filePath);
 
@@ -125,11 +157,13 @@ namespace WebAppen.Controllers
                         }
                     }
 
-                return Json(Url.Action("ViewAlbum", "Album", new { id = albumID }));
+                                     return Json(Url.Action("ViewAlbum", "Album", new { id = AlbumID }));
                 }
+                //return new RedirectResult(Url.Action("ViewAlbum", "Album", new { id = AlbumID }));
+                    
 
             return Json(Request.UrlReferrer.ToString());
-            }
+        }
 
         public ActionResult Edit(int id)
             {
@@ -157,7 +191,7 @@ namespace WebAppen.Controllers
             if (file != null && file.ContentLength > 0)
                 {
 
-                fileName = model.UserID + model.AlbumID + Path.GetFileName(file.FileName);
+                fileName = "pc" + model.id + "al" + model.AlbumID + Path.GetFileName(file.FileName);
                 path = Path.Combine(photoFolder, fileName);
 
                 file.SaveAs(path);

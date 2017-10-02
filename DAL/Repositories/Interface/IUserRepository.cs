@@ -15,7 +15,7 @@ namespace DAL.Repositories.Interface
 
         int GetID(string email);
 
-        
+            int GetNewIndex();
 
         bool AddOrUpdate(UserDataModel user);
 

@@ -75,7 +75,25 @@ namespace DAL.Repositories
                     }
                 }
 
-            public CommentsDataModel ByID(int id)
+                public int GetNewIndex()
+                {
+                    using (var ctx = new MVCContext())
+                    {
+                        var comments = ctx.Comments
+                            .Include(c => c.User)
+                            .Include(c => c.Photo);
+
+                          var res = comments.OrderBy(x => x.ID).LastOrDefault();
+
+                        if (res == null)
+                            return 1;
+                        else
+                            return res.ID + 1;
+
+                    }
+                }
+
+        public CommentsDataModel ByID(int id)
                 {
                 using (var ctx = new MVCContext())
                     {

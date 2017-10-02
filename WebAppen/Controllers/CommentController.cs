@@ -14,16 +14,16 @@ namespace WebAppen.Controllers
     [Authorize]
     public class CommentController : Controller
         {
-           private CommentRepository repo = new CommentRepository();
-        private  UserRepository Userrepo = new UserRepository();
-        private PhotoRepository photorepo = new PhotoRepository();
+           private static CommentRepository repo = new CommentRepository();
+        private  static UserRepository Userrepo = new UserRepository();
+        private static PhotoRepository photorepo = new PhotoRepository();
 
         public CommentController()
                 {
             
                 }
             // GET: Comment
-            [AllowAnonymous]
+          
             public ActionResult Comments(int photoID)
                 {
                 var comments = new List<CommentsVM>();

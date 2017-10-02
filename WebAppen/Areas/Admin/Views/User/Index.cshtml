@@ -10,7 +10,8 @@
     <title>Index</title>
 </head>
 <body>
-    <p>
+    <p>Du kan inte ta bort dig själv som användare</p>
+        
       @*  @Html.ActionLink("Create New", "Create")*@
     </p>
     <table class="table">
@@ -23,6 +24,9 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Role)
             </th>
             <th></th>
         </tr>
@@ -38,11 +42,20 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
+
             <td>
-                @*@Html.ActionLink("Edit", "Edit", new { id=item.id }) |*@
-                @Html.ActionLink("Details", "Details", new { id=item.id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.id })
+                @Html.DisplayFor(modelItem => item.Role)
             </td>
+
+            <td>
+             
+                @if (User.Identity.Name.ToString()!=item.Email)
+                {
+                    @Html.ActionLink("Details", "Details", new { id = item.id });
+                   <text>      </text>
+    @Html.ActionLink("Delete", "Delete", new { id = item.id });
+    }
+</td>
         </tr>
     }
     

@@ -6,9 +6,13 @@ using DAL.Repositories.Interface;
 using DAL.DataModels;
 using System.Data.Entity;
 using System;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
+
 
 namespace DAL.Repositories
     {
+
    public class PhotoRepository:IPhotoRepository
         {
 
@@ -74,8 +78,32 @@ namespace DAL.Repositories
                 }
             }
 
+
+            public int GetNewIndex()
+            {
+                using (var ctx = new MVCContext())
+                {
+                    var photos = ctx.Photos
+                        .Include(p => p.Comments)
+                        .Include(p => p.Album)
+                        .Include(p => p.User);
+                    var res = photos.OrderByDescending(i => i.ID).FirstOrDefault();
+               
+
+                    if (res == null)
+                        return 1;
+                    else
+                        return res.ID+1;
+
+                }
+            }
+
+
         public PhotoDataModel ByID(int id)
             {
+
+            
+
             using (var ctx = new MVCContext())
                 {
                 var photo = ctx.Photos.Where(p => p.ID == id)
@@ -98,6 +126,10 @@ namespace DAL.Repositories
                         .FirstOrDefault();
                 if (photo != null)
                     {
+                    
+                    ctx.Comments.RemoveRange(photo.Comments);
+                
+
                     ctx.Photos.Remove(photo);
                     ctx.SaveChanges();
                     return true;

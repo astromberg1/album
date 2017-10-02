@@ -1,13 +1,14 @@
-﻿@model PhotoVM
+﻿@model WebAppen.Models.PhotoVM
 
 @{
     ViewBag.Title = "Edit";
 }
 
+
 <h2>Edit</h2>
 
 @using (Html.BeginForm("Edit", "Photo", FormMethod.Post, new { enctype = "multipart/form-data", ID = "editform" }))
-    {
+{
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
@@ -67,14 +68,62 @@
             </div>
         </div>
     </div>
-    }
+}
 
 <div>
-    @Html.ActionLink("Back to image", "Details", "Photo", Model, new { ID = "BackToDetails" })
+    @Html.ActionLink("Tillbaka till bilden", "Details", "Photo", Model, new { ID = "BackToDetails" })
 </div>
 
 @section scripts{
-    <script src="~/Scripts/editphoto.js"></script>
-}
+<script type="text/javascript">
 
+    $('document').ready(function (e) {
+        editform.validate();
+    });
+
+
+    var editform = $('#editform');
+
+    editform.on('submit', function (e) {
+        e.preventDefault();
+        if (editform.valid()) {
+
+            swal({
+                    title: "uppdatera bild?",
+                    text: "",
+                    type: "info",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true,
+                },
+                function (e) {
+                    var formdata = new FormData(editform[0]);
+                    $.ajax({
+                        url: editform.attr('action'),
+                        method: "post",
+                        data: formdata,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            swal("Success!", "uppdaterad", "success");
+                            window.location = $('#BackToDetails').attr('href');
+                        },
+                        error: function (data) {
+                            swal("Error!", "gick inte att uppdatera", "error");
+                        }
+                    });
+
+                });
+
+        }
+        else {
+            swal("Warning!", "Formuläret är fel ifyllt!", "warning");
+
+        }
+    });
+
+
+
+    </script>
+}
 

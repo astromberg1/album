@@ -3,6 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebAppen.Models
 {
+    public enum UserRole
+    {
+        Admin=0,
+        User=1
+    }
+
     public class ExternalLoginConfirmationViewModel
     {
         [Required]
@@ -65,11 +71,17 @@ namespace WebAppen.Models
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "Required")]
+
+        
+        [Display(Name = "UserRoles")]
+        public string UserRoles { get; set; }
+
+        [Required(ErrorMessage = "Fältet förnamn behövs")]
        
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Required")]
+        [Required(ErrorMessage = "fältet efternamn behövs")]
         
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
@@ -79,7 +91,7 @@ namespace WebAppen.Models
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
+        [StringLength(10, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 2)]
         [DataType(DataType.Password)]
         [Display(Name = "Password")]
         public string Password { get; set; }

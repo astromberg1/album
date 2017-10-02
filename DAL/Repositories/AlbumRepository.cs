@@ -67,6 +67,25 @@ namespace DAL.Repositories
                 }
             }
 
+            public int GetNewIndex()
+            {
+                using (var ctx = new MVCContext())
+                {
+                var albums = ctx.Albums
+                        .Include(g => g.photos)
+                        .Include(g => g.User)
+                    ;
+
+                var res = albums.OrderBy(x => x.ID).LastOrDefault();
+
+                    if (res == null)
+                        return 1;
+                    else
+                        return res.ID + 1;
+
+                }
+            }
+
         public AlbumDataModel ByID(int ID)
             {
             using (var ctx = new MVCContext())
@@ -87,11 +106,22 @@ namespace DAL.Repositories
                 var album = ctx.Albums.Where(g => g.ID == ID)
                             .Include(g => g.photos)
                             .Include(g => g.User)
+                            
                            .
                             FirstOrDefault();
 
                 if (album != null)
                     {
+
+                    foreach (var  phot in album.photos)
+                    {
+                        ctx.Comments.RemoveRange(phot.Comments);
+                    }
+
+                    ctx.Photos.RemoveRange(album.photos);
+                    
+               
+
                     ctx.Albums.Remove(album);
                     ctx.SaveChanges();
                     return true;

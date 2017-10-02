@@ -1,0 +1,298 @@
+﻿@using Microsoft.AspNet.Identity
+
+
+@{
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.1.1.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/spin.min.js"></script>
+</head>
+<body style="background-color:burlywood">
+<div class="spinner" id="screen"></div>
+
+<h1>Foto albumet</h1>
+<p>Denna applikation kan du ladda upp och kolla på foton</p>
+<input type="hidden" name="id" value="" id="id">
+
+@if (!Request.IsAuthenticated)
+{
+    <p>först måste de logga in</p>
+    <p>eller registrera dig om du det är första gången du är här:</p>
+    <p>Denna applikation är en skoluppgift så du kan själva välja om du ska vara admin eller user</p>
+    <p>är du admin kan du ta bort användare</p>
+    <p>är du user kommer du inte åt detta i menyn,samt att du inte har behörighet för det</p>
+    <br />
+    <p>då detta är en lab så har jag tagit bort lösenordskrav så räcker med 2 tecken för att skapa det</p>
+    <p> test@test.com som en <strong>Admin</strong> användare är förvalt i inloggning med password 1234</p>
+    <p> kalle@test.com finns som <strong>User</strong> med användare password 1234</p>
+    <div>
+        <div class="col-md-2">
+
+            <button class="btn-primary" id="btnreg" onclick="registrera()">Registrera </button>
+        </div>
+    </div>
+    <div>
+        <div class="col-md-2">
+
+            <button class="btn-primary" id="btnlogin" onclick="loggain()">Logga in </button>
+        </div>
+    </div>
+    <div hidden>
+        <ul>
+            <li>
+                @Ajax.ActionLink("Register", "Register", "Account", null, new AjaxOptions
+                {
+
+                    OnBegin = "OngetBegin",
+                    OnComplete = "ongetsucces",
+                    InsertionMode = InsertionMode.Replace, // <-- Replace the content of DOM element
+                    HttpMethod = "GET" // <-- HTTP method
+                }, new { id = "idregister" })
+            </li>
+            <li>
+                @Ajax.ActionLink("Log in", "Login", "Account", null, new AjaxOptions
+                {
+                    Url="Account/Login",
+                    OnBegin = "OngetBegin",
+                    OnComplete = "ongetsucces",
+                    InsertionMode = InsertionMode.Replace, // <-- Replace the content of DOM element
+                    HttpMethod = "GET" // <-- HTTP method
+                }, new { id = "Idlogin" })
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <h1>Välkommen  @User.Identity.GetUserName() !</h1>
+
+    if (HttpContext.Current.User.IsInRole("Admin"))
+    {
+        <h2>Du är behörig att Administrera</h2>
+
+    }
+    else
+    {
+        <h2>Du är en vanlig User</h2>
+
+    }
+
+
+    <p>Klicka på knappen nedan! för att gå vidare</p>
+
+    <div>
+        <div class="col-md-2">
+
+            <button class="btn-primary" id="btnalbum" onclick="fotoalbum()">Foto albumet</button>
+        </div>
+    </div>
+    <div hidden>
+
+        @Ajax.ActionLink("Fotoalbumet", // <-- Text to display
+            "Index", // <-- Action Method Name
+            "Home", null,
+            new AjaxOptions
+            {
+
+                OnBegin = "OngetBegin",
+                OnComplete = "ongetsucces",
+                InsertionMode = InsertionMode.Replace, // <-- Replace the content of DOM element
+                HttpMethod = "GET" // <-- HTTP method
+            }, new { id = "Idindex" })
+
+    </div>
+    @*@Html.ActionLink("Fotoalbumet", "Index", "Home", routeValues: null, htmlAttributes: new { id = "menulink" })*@
+}
+
+
+
+
+
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+
+
+
+<script type="text/javascript">
+    var adress;
+    var spinner;
+
+    function registrera()
+    {
+        
+       
+        adress = top.location.toString();
+       
+        var str = adress;
+      
+
+        if (str.search("Start") > 0) {
+            adress = adress.replace("Start", "Account");
+            adress = adress.replace("Index", "Register");
+
+        }
+        else {
+            if (str.search("/") > 0)
+                adress = adress + "Account/Register";
+            else
+                adress = adress + "/Account/Register";
+        }
+
+       
+        console.log(adress);
+        $('#idregister').click();
+
+    }
+
+    function loggain() {
+        
+
+        adress = top.location.toString();
+        
+        var str = adress;
+        
+
+        if (str.search("Start") > 0) {
+            adress = adress.replace("Start", "Account");
+            adress = adress.replace("Index", "Login");
+
+        }
+        else {
+            if (str.search("/") > 0)
+                adress = adress + "Account/Login";
+            else
+                adress = adress + "/Account/Login";
+        }
+
+        
+        console.log(adress);
+        $('#Idlogin').click();
+    }
+
+    function fotoalbum() {
+        adress = top.location.toString();
+        var str = adress;
+
+        if (str.search("Start") > 0)
+        {
+
+            str = str.replace("Start", "Home");
+        }
+        else
+        {
+            if (str.search("/") > 0)
+                str = str + "Home/Index";
+            else
+                str = str + "/Home/Index";
+        }      
+        
+        adress = str;
+        console.log(adress);
+        $('#Idindex').click();
+
+     
+       
+    }
+
+    function OngetBegin(e) {
+        //*Note: the screen object in this example has a relative position. This allows the spinner to be placed centered within the screen object.
+        var opts = {
+            lines: 13 // The number of lines to draw
+            , length: 28 // The length of each line
+            , width: 14 // The line thickness
+            , radius: 42 // The radius of the inner circle
+            , scale: 2 // Scales overall size of the spinner
+            , corners: 1 // Corner roundness (0..1)
+            , color: '#000' // #rgb or #rrggbb or array of colors
+            , opacity: 0.25 // Opacity of the lines
+            , rotate: 0 // The rotation offset
+            , direction: 1 // 1: clockwise, -1: counterclockwise
+            , speed: 1 // Rounds per second
+            , trail: 60 // Afterglow percentage
+            , fps: 20 // Frames per second when using setTimeout() as a fallback for CSS
+            , zIndex: 2e9 // The z-index (defaults to 2000000000)
+            , className: 'spinner' // The CSS class to assign to the spinner
+            , top: '50%' // Top position relative to parent
+            , left: '50%' // Left position relative to parent
+            , shadow: false // Whether to render a shadow
+            , hwaccel: false // Whether to use hardware acceleration
+            , position: 'absolute' // Element positioning
+        };
+
+        //if (document.getElementById("idindex).click == true)
+       
+        var spinTarget = document.getElementById('screen');
+        spinner = new Spinner(opts);
+
+
+        spinner.spin(spinTarget);
+        $('#screen').data('spinner', spinner);
+        window.location.href = adress;
+
+    }
+
+ 
+    
+    function ongetsucces(e) {
+     
+        spinner.stop();
+       
+     
+        
+        //$(".spinner").remove();
+     
+        //location.href = adress;
+
+
+        //var str = top.location.href;
+
+        //if (str.search("Start") > 0) {
+        //    var n = str.search("Start");
+        //    if (n > 0)
+        //        location.href = str.replace("Start", "Home");
+        //    else
+        //        location.href = str + "Start/Index";
+        //}
+        //else
+        //if (str.search("Login") > 0) {
+        //    var n = str.search("Start");
+        //    if (n > 0)
+        //        location.href = str.replace("Start", "Account");
+        //    else
+        //        location.href = str + "Start/Index";
+        
+
+
+
+        //}
+        //    else
+        //    if (str.search("Register") > 0) {
+
+        //        var n = str.search("Start");
+        //        if (n > 0)
+        //            location.href = str.replace("Start", "Account");
+        //        else
+        //            location.href = str + "Start/Index";
+        //    }
+
+    }
+    
+</script>
+    
+    
+</body>
+
+
+</html>

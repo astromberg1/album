@@ -5,7 +5,7 @@
     <div class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <strong>@comment.User.FullName</strong> <span class="text-muted">commented @comment.DatePosted</span>
+                <strong>@comment.User.FullName</strong> <span class="text-muted">Kommenterad @comment.DatePosted</span>
 
             </div>
             <div class="panel-body">
@@ -18,7 +18,7 @@
             @if (User.Identity.IsAuthenticated && comment.User.Email == User.Identity.Name)
                 {
                 <div class="panel-footer text-muted">
-                    @Html.ActionLink("Delete", "Delete", "Comment", new { }, new { @class = "deletecommentbtn text-muted", id = comment.id })
+                    @Html.ActionLink("Ta bort", "Delete", "Comment", new { }, new { @class = "deletecommentbtn text-muted", id = comment.id })
                 </div>
                 <div id="test">
 

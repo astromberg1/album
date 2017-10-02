@@ -6,24 +6,26 @@
             <li><a href="@Url.Action("Index", "album", new { Area = "" })">album</a></li>
             </ul>
         </div>*@
-        
 
-            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-            {
-            @Html.AntiForgeryToken()
 
-            <ul class="nav navbar-nav navbar-left">
+using (Html.BeginForm("LogOff", "Account", new { area = "" }, FormMethod.Post,  new { id = "logoutForm", @class = "navbar-right" }))
+{
+                @Html.AntiForgeryToken()
+
+                <ul class="nav navbar-nav navbar-left">
                 <li><a href="@Url.Action("Index", "Album", new { Area = "" })">Album</a></li>
                
                 <li><a href="@Url.Action("Index", "User", new { Area = "Admin" })">User Admin</a></li>
+
+                <li><a href="@Url.Action("Index", "Role", new { Area = "Admin" })">User Role Admin</a></li>
                 <li>
 
-                    @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                    <a> @User.Identity.GetUserName() </a> 
                 </li>
                 <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
             </ul>
             }
-            }
+}
             else
             {
             <ul class="nav navbar-nav navbar-right">

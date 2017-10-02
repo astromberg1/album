@@ -13,6 +13,8 @@ using WebAppen.Utilities;
 using DAL.Repositories;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Net;
+using System.Collections.Generic;
+using System.Web.Routing;
 
 namespace WebAppen.Controllers
 {
@@ -21,8 +23,8 @@ namespace WebAppen.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        ApplicationDbContext context;
 
-    
 
         public AccountController()
             {
@@ -105,14 +107,17 @@ namespace WebAppen.Controllers
            
 
         }
-        
-                //
-                // GET: /Account/Login
-                [AllowAnonymous]
+
+        //
+        // GET: /Account/Login
+        [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
-            return View();
+
+            LoginViewModel model = new LoginViewModel();
+
+            return View(model);
         }
 
         //
@@ -122,7 +127,9 @@ namespace WebAppen.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-            if (!ModelState.IsValid)
+             
+
+                    if (!ModelState.IsValid)
             {
                 return View(model);
             }
@@ -188,11 +195,35 @@ namespace WebAppen.Controllers
             }
         }
 
-        //
+
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string returnUrl)
+          
         {
+
+            HttpContextWrapper httpContextWrapper = new HttpContextWrapper(System.Web.HttpContext.Current);
+            UrlHelper urlHelper = new UrlHelper(new RequestContext(httpContextWrapper, RouteTable.Routes.GetRouteData(httpContextWrapper)));
+
+            returnUrl = UrlHelper.GenerateUrl("Default", "Index", "Home",null, RouteTable.Routes, HttpContext.Request.RequestContext, false);
+
+            if (User.Identity.IsAuthenticated)
+            {
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
+            }
+
+            //ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
+            //                                .ToList(), "Name", "Name");
+
+            List<string> selectList = new List<string>();
+            selectList.Add("Admin");
+            selectList.Add("User");
+
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.Roles = new SelectList(selectList);
+        ViewBag.roleslist = selectList;
+            
             return View();
         }
 
@@ -201,8 +232,9 @@ namespace WebAppen.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
@@ -213,6 +245,9 @@ namespace WebAppen.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                     {
+
+                    await this.UserManager.AddToRoleAsync(user.Id,model.UserRoles);
+
                     UserRepository userrepo = new UserRepository();
                     UserVM _uservm = new UserVM();
 
@@ -222,10 +257,12 @@ namespace WebAppen.Controllers
                     _uservm.Idguid = new Guid(user.Id);
                     var entity = ModelMapper.ModelToEntity(_uservm);
                     userrepo.AddOrUpdate(entity);
-                   
+
 
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
 
+                    return RedirectToLocal(returnUrl);
+            
                     //var rm = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext()));
 
                     //string userString = "Admin";
@@ -247,10 +284,17 @@ namespace WebAppen.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    
                 }
                 AddErrors(result);
             }
+            List<string> selectList = new List<string>();
+            selectList.Add("Admin");
+            selectList.Add("User");
+
+
+            ViewBag.Roles = new SelectList(selectList);
+            ViewBag.roleslist = selectList;
 
             // If we got this far, something failed, redisplay form
             return View(model);
@@ -358,7 +402,7 @@ namespace WebAppen.Controllers
         //
         // POST: /Account/ExternalLogin
         [HttpPost]
-        [AllowAnonymous]
+      
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
@@ -480,7 +524,7 @@ namespace WebAppen.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Start");
         }
 
         //

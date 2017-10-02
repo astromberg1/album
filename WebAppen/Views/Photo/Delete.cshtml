@@ -1,12 +1,14 @@
-﻿@model PhotoVM
+﻿@model WebAppen.Models.PhotoVM
 
 @{
-    ViewBag.Title = "Ta bort";
+    ViewBag.Title = "ta bort";
 }
 
-<h2>Ta bort</h2>
+<h2>ta bort</h2>
 
-<h3>Vill du säkert ta bort den?</h3>
+
+
+<h3>Säker du vill ta bort?</h3>
 <div>
     <dl class="dl-horizontal">
         <dt>
@@ -52,16 +54,52 @@
     </dl>
 </div>
 
-@using (Html.BeginForm("Delete", "Photo", new { id = Model.id, albumID = Model.AlbumID }, FormMethod.Post, new { id = "deletephotoform" }))
-    {
+@using (Html.BeginForm("Delete", "Photo", new { id = Model.id, AlbumID=Model.AlbumID}, FormMethod.Post, new { id = "deletepictureform" }))
+{
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m => Model.id);
     @Html.HiddenFor(m => Model.AlbumID);
     <div class="form-actions no-color">
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        @Html.ActionLink("Tillbaka till bilden", "Details", "Photo", Model, null)
+        <input type="submit" value="Delete" class="btn btn-default" id="removelink"/> |
+        @Html.ActionLink("Back to image", "Details", "Photo", Model, null)
     </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+
+        var deleteform = $('#deletepictureform');
+
+        deleteform.on('submit', function (e) {
+            e.preventDefault();
+            
+            swal({
+                    title: "Ta bort bild!?",
+                    text: "",
+                    type: "warning",
+                    showCancelButton: true,
+                    closeOnConfirm: false,
+                    showLoaderOnConfirm: true,
+                },
+                function () {
+                    $.ajax({
+                        url: "/Photo/Delete",
+                        type: "post",
+                        data: deleteform.serialize(),
+                        success: function (data) {
+                            swal("Success", "bilden är bort tagen.", "success");
+                            window.location.href = data;
+
+                        },
+                        error: function (e) {
+                            swal("Error", "gick inte att ta bort den", "error");
+                        }
+                    });
+
+               
+
+                });
+        });
+    </script>
+
     }
-
-
-<script src="~/Scripts/deletephoto.js"></script>
